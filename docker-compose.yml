@@ -1,0 +1,74 @@
+version: '3.1'
+services:
+  apigatewayolinda-db:
+    container_name: apigatewayolinda_pgslq_db
+    image: postgres
+    environment:
+      POSTGRES_DB: 'dbapigatewayolinda'
+      POSTGRES_PASSWORD: 'root'
+      POSTGRES_USER: 'root'
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/apigatewayolinda/pgdata:/var/lib/postgresql
+
+  apigatewayolinda_api:
+    container_name: apigatewayolinda_api
+    build:
+      context: ./api
+      dockerfile: Dockerfile-dev
+    ports:
+      - 7081:80
+    environment:
+      APP_ENV: 'local'
+      APP_DEBUG: 'true'
+      APP_URL: 'http://localhost:7081'
+      APP_VER: '1.0.0'
+      DATABASE_DRIVER: 'pdo_pgsql'
+      DATABASE_HOST: apigatewayolinda-db
+      DATABASE_PORT: '5432'
+      DATABASE_NAME: 'dbapigatewayolinda'
+      DATABASE_USER: 'root'
+      DATABASE_PASSWORD: 'root'
+      restart: always
+    volumes:
+      - ./api:/var/www/html/api
+    depends_on:
+      - apigatewayolinda-db
+
+  apigatewayolinda-php-fpm:
+    container_name: apigatewayolinda_php_fpm
+    build:
+      context: ./api
+      dockerfile: Dockerfile-dev
+    environment:
+      DATABASE_DRIVER: 'pdo_pgsql'
+      DATABASE_HOST: apigatewayolinda-db
+      DATABASE_PORT: '5432'
+      DATABASE_NAME: 'dbapigatewayolinda'
+      DATABASE_USER: 'root'
+      DATABASE_PASSWORD: 'root'
+    command: php artisan migrate --seed
+    depends_on:
+      - apigatewayolinda-db
+
+  apigatewayolinda-frontend:
+    container_name: apigatewayolinda_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-dev
+    environment:
+      REACT_APP_BASE_URL_BACKEND: ' http://localhost:7081/api'
+      REACT_APP_BACKEND_TOKEN: ' YXJxdWl0ZXR1cmFfY2dz'
+    volumes:
+      - ./frontend:/var/www/html
+    ports:
+      - 7080:3000
+    command: >
+     sh -c "npm install && npm start" 
+    restart: always
+    privileged: true
+
+networks:
+  default:
+    driver: bridge

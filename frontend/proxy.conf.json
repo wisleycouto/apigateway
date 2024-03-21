@@ -1,0 +1,16 @@
+{
+    "/api/*": {
+        "target": "http://dsv-apigatewayolinda.container.mec.gov.br/api",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {"^/api" : ""}
+    },
+    "/cas/login": {
+        "target": "http://dsv-apigatewayolinda.container.mec.gov.br",
+        "secure": false
+    },
+    "/cas/logout": {
+        "target": "http://dsv-apigatewayolinda.container.mec.gov.br",
+        "secure": false
+    }
+}

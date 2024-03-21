@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  font-family: 'Rawline', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#content {
+  min-height: 100vh;
+}
+
+a , a:hover{
+  text-decoration: none;
+}
+
+is-loading:after, .loading:after, [loading]:after {
+  display: none !important;
+}
+
+:root {
+  border: none;
+}

@@ -1,0 +1,9 @@
+FROM node:14.20
+
+LABEL maintainer="Arquitetura CGS <stic-cgs-arquitetura@mec.gov.br>"
+
+RUN apt-get -y update && apt-get -y install curl vim
+
+WORKDIR /var/www/html
+
+EXPOSE 3000 
